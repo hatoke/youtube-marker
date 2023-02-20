@@ -8,11 +8,11 @@ function createTabs({ tabs, defaultSelected, targetElement }) {
     selectedTab = defaultSelected;
   }
 
-  if (tabs.length === 0) {
+  if (!tabs || tabs.length === 0) {
     throw new Error("tabs not found, tabs length: 0");
   }
 
-  if (targetElement.length === 0) {
+  if (!targetElement || targetElement.length === 0) {
     throw new Error("target element empty");
   }
 
@@ -35,9 +35,11 @@ function createTabs({ tabs, defaultSelected, targetElement }) {
     }
     selectedTab = tab;
   };
+
+  return [tabsObject[selectedTab], setSelectedTab];
 }
 
-createTabs({
+const [selectedTab, setSelectedTab] = createTabs({
   tabs,
   targetElement: ".tab-menu",
   defaultSelected: "LAST_TAB",
