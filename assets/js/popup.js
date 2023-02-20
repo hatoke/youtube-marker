@@ -1,29 +1,47 @@
-const lastTab = document.querySelector(".tab-menu li:nth-child(1)");
-const favoriteTab = document.querySelector(".tab-menu li:nth-child(2)");
+let tabs = ["LAST_TAB", "FAVORITE_TAB"];
 
-lastTab.onclick = () => {
-  setSelectedTab("LAST_TAB");
-};
+function createTabs({ tabs, defaultSelected, targetElement }) {
+  const tabsObject = {};
+  let selectedTab = "";
 
-favoriteTab.onclick = () => {
-  setSelectedTab("FAVOTIRE_TAB");
-};
-
-let selectedTab = "LAST_TAB";
-const setSelectedTab = (tab) => {
-  const tabs = {
-    LAST_TAB: lastTab,
-    FAVOTIRE_TAB: favoriteTab,
-  };
-
-  if (tabs[tab]) {
-    console.log("previous selected tab", tabs[selectedTab]);
-    console.log("new selected tab ", tabs[tab]);
-    tabs[selectedTab].classList.remove("selected");
-    tabs[tab].classList.add("selected");
+  if (defaultSelected) {
+    selectedTab = defaultSelected;
   }
-  selectedTab = tab;
-};
+
+  if (tabs.length === 0) {
+    throw new Error("tabs not found, tabs length: 0");
+  }
+
+  if (targetElement.length === 0) {
+    throw new Error("target element empty");
+  }
+
+  tabs.forEach((key, index) => {
+    tabsObject[key] = document.querySelector(
+      `${targetElement} li:nth-child(${index + 1})`
+    );
+  });
+
+  Object.keys(tabsObject).forEach((key, index) => {
+    tabsObject[key].onclick = () => {
+      setSelectedTab(key);
+    };
+  });
+
+  const setSelectedTab = (tab) => {
+    if (tabsObject[tab]) {
+      tabsObject[selectedTab].classList.remove("selected");
+      tabsObject[tab].classList.add("selected");
+    }
+    selectedTab = tab;
+  };
+}
+
+createTabs({
+  tabs,
+  targetElement: ".tab-menu",
+  defaultSelected: "LAST_TAB",
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   fetchMarkups().then((response) => {
