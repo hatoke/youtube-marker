@@ -1,3 +1,30 @@
+const lastTab = document.querySelector(".tab-menu li:nth-child(1)");
+const favoriteTab = document.querySelector(".tab-menu li:nth-child(2)");
+
+lastTab.onclick = () => {
+  setSelectedTab("LAST_TAB");
+};
+
+favoriteTab.onclick = () => {
+  setSelectedTab("FAVOTIRE_TAB");
+};
+
+let selectedTab = "LAST_TAB";
+const setSelectedTab = (tab) => {
+  const tabs = {
+    LAST_TAB: lastTab,
+    FAVOTIRE_TAB: favoriteTab,
+  };
+
+  if (tabs[tab]) {
+    console.log("previous selected tab", tabs[selectedTab]);
+    console.log("new selected tab ", tabs[tab]);
+    tabs[selectedTab].classList.remove("selected");
+    tabs[tab].classList.add("selected");
+  }
+  selectedTab = tab;
+};
+
 document.addEventListener("DOMContentLoaded", function () {
   fetchMarkups().then((response) => {
     for (const [key, value] of Object.entries(response)) {

@@ -1,8 +1,8 @@
 let videoID = new URL(window.location.href).searchParams.get("v");
 let oldVideoID = videoID;
 let player;
-const goMarkup = (time,e) => {
-  if(!e.target.classList.contains("markup-remove")){
+const goMarkup = (time, e) => {
+  if (!e.target.classList.contains("markup-remove")) {
     let player = document.querySelector("video");
     player.currentTime = time;
     player.play();
@@ -144,14 +144,12 @@ function clearMarkupPanel() {
 }
 
 function createMarkupRow(markup, index) {
-  let context = markup.context,
-    time = markup.time,
-    formatted = markup.formatted;
+  const { context, time, formatted } = markup;
   let row = document.createElement("div");
   row.classList.add("markup-row");
   row.id = `markup${index}`;
   row.onclick = (event) => {
-    goMarkup(time,event);
+    goMarkup(time, event);
   };
 
   row.innerHTML = `
@@ -182,7 +180,6 @@ function createPlayerButton() {
   button.setAttribute("aria-label", "Markup");
   button.setAttribute("title", "Markup");
   button.innerHTML = `<svg height="100%" viewBox="0 0 24 24" width="75%"><use class="ytp-svg-shadow" href="#ytp-id-8688"></use><path fill="#fff" fill-rule="evenodd" id="ytp-id-8688" d="M17,18V5H7V18L12,15.82L17,18M17,3A2,2 0 0,1 19,5V21L12,18L5,21V5C5,3.89 5.9,3 7,3H17M11,7H13V9H15V11H13V13H11V11H9V9H11V7Z" /></svg>`;
-
 
   return button;
 }
@@ -282,11 +279,12 @@ function deleteMarkup(time) {
     for (const [key, value] of Object.entries(result)) {
       value.forEach((item, index) => {
         if (time === item.time) {
-          value.splice(index,1);
+          value.splice(index, 1);
           document.getElementById(`markup${index}`).remove();
           result[videoID] = value;
-          if(result[videoID].length === 0){
-            document.getElementById('markup-row-list').innerHTML = '<div class="markup-row"><i>There is no markup for this video.</i></div>';
+          if (result[videoID].length === 0) {
+            document.getElementById("markup-row-list").innerHTML =
+              '<div class="markup-row"><i>There is no markup for this video.</i></div>';
           }
         }
       });
@@ -296,8 +294,8 @@ function deleteMarkup(time) {
 }
 
 function addMarkup(id, newMarkup) {
-  let firstRow = document.querySelector('.markup-row');
-  if(!firstRow.hasAttribute('id')){
+  let firstRow = document.querySelector(".markup-row");
+  if (!firstRow.hasAttribute("id")) {
     firstRow.remove();
   }
   chrome.storage.sync.get({ [id]: [] }, function (result) {
