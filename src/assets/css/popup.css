@@ -1,10 +1,12 @@
 body::-webkit-scrollbar {
   width: 12px;
 }
+
 body::-webkit-scrollbar-thumb {
   border-radius: 8px;
   background-color: #424242;
 }
+
 body::-webkit-scrollbar-thumb:hover {
   border-radius: 8px;
   background-color: #868686;
@@ -15,37 +17,66 @@ body::-webkit-scrollbar-track {
   background-color: #0a0505;
   margin-top: 3px;
 }
+
 * {
   font-family: "Roboto", sans-serif;
 }
+
 body {
   background-color: #171616;
 }
+
 #videolist {
   width: 530px;
   min-height: 200px;
   height: auto;
 }
+
 .markup-item {
   background-color: #272727;
   margin-bottom: 8px;
   border-radius: 8px;
-}
-.markup-item .video-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: #fff;
   text-decoration: none;
-  display: flex;
+  padding: 10px;
+  height: 60px;
+}
+
+.markup-item img:first-child {  
+  margin: 0 10px 0 0 !important;
+}
+
+.markup-item:last-child {
+  margin: 0 0 0 10px !important;
+}
+
+.markup-item > * {
+  margin: 0 10px;
+}
+
+.video-info{
+  flex: 1;
+  display: flex;  
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
   cursor: pointer;
 }
+
+.video-info:hover svg {
+  transform: rotate(0);
+}
+
 .video-title {
   flex-basis: 65%;
-  font-size: 14px;
+  font-size: 16px;
 }
+
 .video-thumbnail {
-  width: 120px;
+  width: 80px;
+  border-radius: 5px;
 }
 
 .markup-count {
@@ -53,6 +84,21 @@ body {
   font-size: 18px;
   border-radius: 5px;
   background-color: #424242;
+}
+
+.favorite-icon {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.collapse-icon svg {
+  pointer-events: none;
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: #ddd;
+  transition: 200ms all ease;
+  transform: rotate(-180deg);
 }
 
 .tab-menu {
