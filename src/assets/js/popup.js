@@ -1,6 +1,8 @@
+import storage from "../js/chromeStorage";
+
 let tabs = ["LAST_TAB", "FAVORITE_TAB"];
 
-function createTabs({ tabs, defaultSelected, targetElement }) {
+function createTabs({ tabs, defaultSelected, targetElement, changeCallback }) {
   const tabsObject = {};
   let selectedTab = "";
 
@@ -34,6 +36,7 @@ function createTabs({ tabs, defaultSelected, targetElement }) {
       tabsObject[tab].classList.add("selected");
     }
     selectedTab = tab;
+    changeCallback(selectedTab);
   };
 
   return [tabsObject[selectedTab], setSelectedTab];
@@ -43,10 +46,15 @@ const [selectedTab, setSelectedTab] = createTabs({
   tabs,
   targetElement: ".tab-menu",
   defaultSelected: "LAST_TAB",
+  changeCallback: showSelectedTabList,
 });
 
+function showSelectedTabList(selectedTab) {
+  console.log("change dom ", selectedTab);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  fetchMarkups().then((response) => {
+  storage.getSyncStorage(null).then((response) => {
     for (const [key, value] of Object.entries(response)) {
       if (value.length > 0) {
         let markup = value.at(0);
@@ -89,16 +97,4 @@ async function getCurrentTab() {
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [tab] = await chrome.tabs.query(queryOptions);
   return tab;
-}
-
-function fetchMarkups() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(null, function (result) {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-      // Pass the data retrieved from storage down the promise chain.
-      resolve(result);
-    });
-  });
 }

@@ -1,0 +1,25 @@
+{
+  "name": "youtube-marker",
+  "version": "1.0.0",
+  "description": "You can use this tool to mark the parts of videos you watch on YouTube that are important to you.",
+  "main": "index.js",
+  "scripts": {
+    "build:dev": "rm -rf ./dist && NODE_ENV=production webpack --config webpack.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hatoke/youtube-marker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hatoke/youtube-marker/issues"
+  },
+  "homepage": "https://github.com/hatoke/youtube-marker#readme",
+  "devDependencies": {
+    "babel-loader": "^9.1.2",
+    "copy-webpack-plugin": "^11.0.0",
+    "webpack": "^5.76.3",
+    "webpack-cli": "^5.0.1"
+  }
+}

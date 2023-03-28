@@ -1,6 +1,9 @@
+import storage from "../js/chromeStorage";
+
 let videoID = new URL(window.location.href).searchParams.get("v");
 let oldVideoID = videoID;
 let player;
+
 const goMarkup = (time, e) => {
   if (!e.target.classList.contains("markup-remove")) {
     let player = document.querySelector("video");
@@ -9,7 +12,7 @@ const goMarkup = (time, e) => {
   }
 };
 
-(() => {
+function showMarkup() {
   let videoMarkups = [];
 
   const buttonHandler = (e) => {
@@ -76,8 +79,8 @@ const goMarkup = (time, e) => {
 
       player = document.querySelector("video");
 
-      fetchMarkups(videoID).then((markups) => {
-        videoMarkups = markups;
+      storage.getSyncStorage({ [videoID]: [] }).then((markups) => {
+        videoMarkups = markups[videoID];
         const callback = function (mutationsList, observer) {
           for (let mutation of mutationsList) {
             if (mutation.type === "childList") {
@@ -111,7 +114,7 @@ const goMarkup = (time, e) => {
   });
 
   start();
-})();
+}
 
 function markupPanel(items) {
   let panel = document.createElement("div");
@@ -123,15 +126,16 @@ function markupPanel(items) {
       <div style="height: 40px"></div>
     </div>        
   `;
-  /* panel.innerHTML = `<div class="markup-panel-title"><p>Markups</p></div>`; */
   const rowList = document.createElement("div");
   rowList.id = "markup-row-list";
+  
   if (items.length === 0) {
     rowList.innerHTML = `<div class="markup-row"><i>There is no markup for this video.</i></div>`;
+  } else {
+    items.forEach((item, index) => {
+      rowList.appendChild(createMarkupRow(item, index));
+    });
   }
-  items.forEach((item, index) => {
-    rowList.appendChild(createMarkupRow(item, index));
-  });
 
   panel.appendChild(rowList);
   return panel;
@@ -275,7 +279,7 @@ function fancyTimeFormat(duration) {
 }
 
 function deleteMarkup(time) {
-  chrome.storage.sync.get({ [videoID]: [] }, function (result) {
+  storage.getSyncStorage([videoID]).then((result) => {
     for (const [key, value] of Object.entries(result)) {
       value.forEach((item, index) => {
         if (time === item.time) {
@@ -289,7 +293,8 @@ function deleteMarkup(time) {
         }
       });
     }
-    chrome.storage.sync.set({ [videoID]: result[videoID] });
+
+    storage.setSyncStorage({ [videoID]: result[videoID] });
   });
 }
 
@@ -298,25 +303,13 @@ function addMarkup(id, newMarkup) {
   if (!firstRow.hasAttribute("id")) {
     firstRow.remove();
   }
-  chrome.storage.sync.get({ [id]: [] }, function (result) {
+  storage.getSyncStorage({ [id]: [] }).then((result) => {
     let markupList = result[id];
     markupList.push(newMarkup);
-    chrome.storage.sync.set({ [id]: markupList });
+    storage.setSyncStorage({ [id]: markupList });
     document
       .getElementById("markup-row-list")
       .appendChild(createMarkupRow({ ...newMarkup }, markupList.length - 1));
-  });
-}
-
-function fetchMarkups(id) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get({ [id]: [] }, function (result) {
-      if (chrome.runtime.lastError) {
-        return reject(chrome.runtime.lastError);
-      }
-      // Pass the data retrieved from storage down the promise chain.
-      resolve(result[id]);
-    });
   });
 }
 
@@ -350,3 +343,5 @@ function saveHandler() {
   player.play();
   wrapper.classList.add("hidden");
 }
+
+showMarkup();
